@@ -1,2 +1,0 @@
-"# ai-training" 
-"# ai-training" 
