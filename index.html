@@ -1,3 +1,874 @@
-Hello, World!!
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>스튜디오 여백 — 소상공인 브랜드 디자이너 이도현</title>
+  <meta name="description" content="동네 가게·공방·1인 사업자를 위한 로고, 간판, 메뉴판, 명함 디자인. 스튜디오 여백 이도현입니다." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet" />
 
-이번엔 Vercel에 두 번째 자동 배포를 실험해 봅니다.
+  <style>
+    /* ─── 리셋 & 기본 ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --c-bg:       #FAFAF8;
+      --c-white:    #FFFFFF;
+      --c-green:    #4A7C59;
+      --c-green-lt: #7BAE8B;
+      --c-green-xs: #EEF5F1;
+      --c-ink:      #1E1E1E;
+      --c-gray:     #6B7280;
+      --c-line:     #E8EDE9;
+      --radius-md:  14px;
+      --radius-lg:  22px;
+      --shadow-sm:  0 2px 12px rgba(74,124,89,.10);
+      --shadow-md:  0 6px 32px rgba(74,124,89,.14);
+      --font-sans:  'Noto Sans KR', sans-serif;
+      --font-serif: 'Noto Serif KR', serif;
+      --transition: .35s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--c-bg);
+      color: var(--c-ink);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ─── 유틸 ────────────────────────────────────────────── */
+    .container { width: min(1100px, 92%); margin-inline: auto; }
+    .section   { padding: 96px 0; }
+    .section--alt { background: var(--c-white); }
+    .tag {
+      display: inline-block;
+      font-size: .75rem; font-weight: 500; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--c-green);
+      border: 1.5px solid var(--c-green-lt);
+      border-radius: 99px; padding: 4px 14px; margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 600; line-height: 1.3;
+      color: var(--c-ink); margin-bottom: 12px;
+    }
+    .section-sub {
+      font-size: 1rem; color: var(--c-gray);
+      max-width: 480px; margin-bottom: 56px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-sans); font-size: .95rem; font-weight: 500;
+      text-decoration: none; border-radius: 99px;
+      padding: 14px 32px; cursor: pointer;
+      transition: var(--transition); border: none; outline: none;
+    }
+    .btn-primary {
+      background: var(--c-green); color: #fff;
+      box-shadow: 0 4px 20px rgba(74,124,89,.35);
+    }
+    .btn-primary:hover { background: #3a6347; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(74,124,89,.4); }
+    .btn-outline {
+      background: transparent; color: var(--c-green);
+      border: 2px solid var(--c-green);
+    }
+    .btn-outline:hover { background: var(--c-green-xs); transform: translateY(-2px); }
+
+    /* ─── 내비게이션 ──────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 20px 0;
+      backdrop-filter: blur(14px);
+      background: rgba(250,250,248,.85);
+      border-bottom: 1px solid var(--c-line);
+      transition: var(--transition);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--font-serif); font-size: 1.15rem; font-weight: 600;
+      color: var(--c-ink); text-decoration: none; letter-spacing: -.01em;
+    }
+    .nav-logo span { color: var(--c-green); }
+    .nav-links {
+      display: flex; gap: 36px; list-style: none;
+    }
+    .nav-links a {
+      font-size: .88rem; font-weight: 400;
+      color: var(--c-gray); text-decoration: none;
+      transition: var(--transition);
+    }
+    .nav-links a:hover { color: var(--c-green); }
+    .nav-cta { display: flex; align-items: center; }
+
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--c-ink); border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    /* ─── 히어로 ──────────────────────────────────────────── */
+    .hero {
+      min-height: 100svh;
+      display: flex; align-items: center;
+      padding-top: 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(74,124,89,.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(123,174,139,.07) 0%, transparent 50%);
+    }
+    /* 배경 장식 원 */
+    .hero-bg::before {
+      content: '';
+      position: absolute; right: -80px; top: 15%;
+      width: 520px; height: 520px; border-radius: 50%;
+      border: 1.5px solid rgba(74,124,89,.12);
+      animation: spin-slow 40s linear infinite;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute; right: 60px; top: 25%;
+      width: 340px; height: 340px; border-radius: 50%;
+      border: 1px solid rgba(74,124,89,.08);
+    }
+    @keyframes spin-slow {
+      to { transform: rotate(360deg); }
+    }
+
+    .hero-inner {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center; gap: 64px;
+    }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--c-green);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform: scale(1); }
+      50%      { opacity:.5; transform: scale(1.4); }
+    }
+    .hero-eyebrow-text {
+      font-size: .82rem; font-weight: 500; color: var(--c-green);
+      letter-spacing: .08em; text-transform: uppercase;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 600; line-height: 1.25;
+      color: var(--c-ink); margin-bottom: 24px;
+      word-break: keep-all;
+    }
+    .hero-title .accent { color: var(--c-green); }
+    .hero-desc {
+      font-size: 1.05rem; color: var(--c-gray);
+      max-width: 420px; margin-bottom: 40px;
+      word-break: keep-all;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .hero-stats {
+      display: flex; gap: 32px; margin-top: 56px; flex-wrap: wrap;
+    }
+    .stat-item {}
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 2rem; font-weight: 600; color: var(--c-green);
+    }
+    .stat-label { font-size: .82rem; color: var(--c-gray); margin-top: 2px; }
+
+    /* 히어로 우측 일러스트 */
+    .hero-visual {
+      display: flex; justify-content: center; align-items: center;
+      position: relative;
+    }
+    .hero-card {
+      width: 320px; background: var(--c-white);
+      border-radius: var(--radius-lg);
+      padding: 36px; box-shadow: var(--shadow-md);
+      position: relative;
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-12px); }
+    }
+    .hero-card-tag {
+      font-size: .7rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--c-green);
+      margin-bottom: 20px;
+    }
+    .hero-card-logo {
+      width: 100%; margin-bottom: 20px;
+    }
+    .hero-card-desc {
+      font-size: .82rem; color: var(--c-gray); line-height: 1.6;
+    }
+
+    /* 떠다니는 작은 카드들 */
+    .float-badge {
+      position: absolute;
+      background: var(--c-white);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      box-shadow: var(--shadow-sm);
+      font-size: .78rem; font-weight: 500;
+      display: flex; align-items: center; gap: 8px;
+      white-space: nowrap;
+    }
+    .float-badge--1 {
+      top: -20px; right: -30px;
+      animation: float2 5s ease-in-out infinite;
+    }
+    .float-badge--2 {
+      bottom: 10px; left: -40px;
+      animation: float2 7s ease-in-out infinite reverse;
+    }
+    @keyframes float2 {
+      0%,100% { transform: translateY(0) rotate(-2deg); }
+      50%      { transform: translateY(-8px) rotate(2deg); }
+    }
+    .badge-icon { font-size: 1.1rem; }
+
+    /* ─── 서비스 ──────────────────────────────────────────── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    .service-card {
+      background: var(--c-white);
+      border: 1.5px solid var(--c-line);
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      cursor: default;
+      transition: var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px; background: var(--c-green);
+      transform: scaleX(0); transform-origin: left;
+      transition: var(--transition);
+    }
+    .service-card:hover {
+      border-color: var(--c-green-lt);
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-md);
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-icon {
+      width: 52px; height: 52px;
+      background: var(--c-green-xs);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .service-icon svg { width: 26px; height: 26px; }
+    .service-title {
+      font-family: var(--font-serif);
+      font-size: 1.1rem; font-weight: 600;
+      color: var(--c-ink); margin-bottom: 10px;
+    }
+    .service-desc {
+      font-size: .88rem; color: var(--c-gray); line-height: 1.7;
+      word-break: keep-all;
+    }
+    .service-price {
+      margin-top: 20px;
+      font-size: .82rem; font-weight: 600; color: var(--c-green);
+    }
+
+    /* ─── 작업 사례 ───────────────────────────────────────── */
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .case-card {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--c-white);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      cursor: default;
+    }
+    .case-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-md);
+    }
+    .case-visual {
+      height: 220px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .case-visual-bakery  { background: linear-gradient(135deg, #F5F0E8 0%, #EDE3CD 100%); }
+    .case-visual-craft   { background: linear-gradient(135deg, #EEF5F1 0%, #D9EBE2 100%); }
+    .case-visual-cafe    { background: linear-gradient(135deg, #F0F4F8 0%, #DDE8F0 100%); }
+    .case-body { padding: 24px; }
+    .case-cat {
+      font-size: .72rem; font-weight: 700; letter-spacing: .09em;
+      text-transform: uppercase; color: var(--c-green); margin-bottom: 8px;
+    }
+    .case-title {
+      font-family: var(--font-serif); font-size: 1.05rem; font-weight: 600;
+      color: var(--c-ink); margin-bottom: 6px;
+    }
+    .case-desc { font-size: .84rem; color: var(--c-gray); word-break: keep-all; }
+
+    /* ─── 강점 배너 ───────────────────────────────────────── */
+    .strength {
+      background: var(--c-green);
+      padding: 72px 0;
+      position: relative; overflow: hidden;
+    }
+    .strength::before {
+      content: '여백';
+      position: absolute; right: -40px; top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-serif);
+      font-size: 18rem; font-weight: 700;
+      color: rgba(255,255,255,.05); line-height: 1;
+      pointer-events: none; user-select: none;
+    }
+    .strength-inner {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    .strength-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 600; color: #fff; line-height: 1.35;
+      word-break: keep-all;
+    }
+    .strength-title em { font-style: normal; opacity: .7; }
+    .strength-list { list-style: none; }
+    .strength-list li {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.88);
+      font-size: .95rem; word-break: keep-all;
+    }
+    .strength-list li:last-child { border-bottom: none; }
+    .strength-list .check {
+      flex-shrink: 0; width: 22px; height: 22px;
+      background: rgba(255,255,255,.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; margin-top: 2px;
+    }
+
+    /* ─── CTA 섹션 ────────────────────────────────────────── */
+    .cta {
+      text-align: center; padding: 112px 0;
+    }
+    .cta-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 4.5vw, 3rem);
+      font-weight: 600; line-height: 1.3;
+      color: var(--c-ink); margin-bottom: 16px;
+      word-break: keep-all;
+    }
+    .cta-sub {
+      font-size: 1rem; color: var(--c-gray); margin-bottom: 40px;
+      word-break: keep-all;
+    }
+    .cta-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .cta-contact {
+      margin-top: 40px;
+      display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+    }
+    .contact-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: .9rem; color: var(--c-gray); text-decoration: none;
+      transition: var(--transition);
+    }
+    .contact-item:hover { color: var(--c-green); }
+    .contact-icon {
+      width: 38px; height: 38px;
+      background: var(--c-green-xs);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ─── 푸터 ────────────────────────────────────────────── */
+    footer {
+      background: var(--c-ink);
+      padding: 48px 0;
+      color: rgba(255,255,255,.5);
+    }
+    .footer-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      font-family: var(--font-serif);
+      font-size: 1.05rem; font-weight: 600;
+      color: #fff;
+    }
+    .footer-logo span { color: var(--c-green-lt); }
+    .footer-links {
+      display: flex; gap: 24px; list-style: none;
+    }
+    .footer-links a {
+      font-size: .82rem; color: rgba(255,255,255,.45);
+      text-decoration: none; transition: var(--transition);
+    }
+    .footer-links a:hover { color: var(--c-green-lt); }
+    .footer-copy { font-size: .78rem; }
+
+    /* ─── 페이드인 애니메이션 ─────────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* ─── 모바일 ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-inner       { grid-template-columns: 1fr; gap: 48px; }
+      .hero-visual      { display: none; }
+      .hero-title       { font-size: clamp(1.8rem, 7vw, 2.8rem); }
+      .cases-grid       { grid-template-columns: 1fr; }
+      .strength-inner   { grid-template-columns: 1fr; gap: 36px; }
+      .nav-links        { display: none; }
+      .hamburger        { display: flex; }
+      .nav-cta .btn     { padding: 10px 20px; font-size: .82rem; }
+    }
+
+    @media (max-width: 600px) {
+      .section          { padding: 64px 0; }
+      .services-grid    { grid-template-columns: 1fr; }
+      .hero-stats       { gap: 20px; }
+      .footer-inner     { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ─── SVG 일러스트 스타일 ─────────────────────────────── */
+    .illust-bakery, .illust-craft, .illust-cafe { width: 100%; height: 100%; }
+  </style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════ 내비게이션 ══════════════════════════════ -->
+<nav id="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">스튜디오 <span>여백</span></a>
+    <ul class="nav-links">
+      <li><a href="#services">서비스</a></li>
+      <li><a href="#cases">작업 사례</a></li>
+      <li><a href="#about">강점</a></li>
+      <li><a href="#contact">문의</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="mailto:yeobaek.studio@example.com" class="btn btn-primary">지금 문의하기</a>
+    </div>
+    <button class="hamburger" aria-label="메뉴" onclick="toggleMenu(this)">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ 히어로 ══════════════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="container hero-inner">
+
+    <!-- 텍스트 -->
+    <div class="hero-text">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        <span class="hero-eyebrow-text">1인 브랜드 디자이너 · 이도현</span>
+      </div>
+      <h1 class="hero-title">
+        작은 가게에도<br />
+        <span class="accent">브랜드다운 얼굴</span>이<br />
+        필요합니다.
+      </h1>
+      <p class="hero-desc">
+        동네 가게, 작은 공방, 1인 사업자를 위한 로고·간판·메뉴판·명함.<br />
+        군더더기 없는 여백의 감각으로, 당신의 가게를 기억되게 합니다.
+      </p>
+      <div class="hero-actions">
+        <a href="mailto:yeobaek.studio@example.com" class="btn btn-primary">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          무료 상담 신청
+        </a>
+        <a href="#cases" class="btn btn-outline">작업 사례 보기</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">50+</div>
+          <div class="stat-label">완료 프로젝트</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">98%</div>
+          <div class="stat-label">고객 만족도</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">3년+</div>
+          <div class="stat-label">브랜딩 경험</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 비주얼 카드 -->
+    <div class="hero-visual">
+      <div class="float-badge float-badge--1">
+        <span class="badge-icon">✨</span>
+        로고 디자인 완료
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-tag">Brand Identity · 2024</div>
+        <!-- SVG 로고 일러스트 -->
+        <svg class="hero-card-logo" viewBox="0 0 260 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 빵집 로고 일러스트 -->
+          <rect width="260" height="120" rx="8" fill="#F9F6F0"/>
+          <!-- 밀 아이콘 -->
+          <circle cx="70" cy="60" r="28" fill="#EDE3CD"/>
+          <path d="M70 38 C70 38 62 50 62 60 C62 70 70 82 70 82 C70 82 78 70 78 60 C78 50 70 38 70 38Z" fill="#C8A96E" opacity=".8"/>
+          <path d="M60 52 C60 52 52 57 52 62 C52 67 60 70 60 70" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M80 52 C80 52 88 57 88 62 C88 67 80 70 80 70" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- 텍스트 -->
+          <text x="110" y="52" font-family="Georgia, serif" font-size="16" font-weight="600" fill="#2D2215">달 베이커리</text>
+          <text x="110" y="72" font-family="Arial, sans-serif" font-size="10" fill="#9B8B70" letter-spacing="2">MOON BAKERY</text>
+          <line x1="110" y1="82" x2="200" y2="82" stroke="#E8DDD0" stroke-width="1"/>
+          <text x="110" y="95" font-family="Arial, sans-serif" font-size="8.5" fill="#B8A898">Since 2019 · Handmade</text>
+        </svg>
+        <p class="hero-card-desc">동네 빵집 로고 리뉴얼 — 따뜻하고 정직한 이미지로 재탄생</p>
+      </div>
+      <div class="float-badge float-badge--2">
+        <span class="badge-icon">🎨</span>
+        브랜드 패키지 3종
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 서비스 ══════════════════════════════════ -->
+<section class="section section--alt" id="services">
+  <div class="container">
+    <div class="reveal">
+      <span class="tag">Services</span>
+      <h2 class="section-title">이런 것들을 도와드릴 수 있어요</h2>
+      <p class="section-sub">
+        작은 예산이어도 괜찮습니다. 필요한 것부터 하나씩 시작해요.
+      </p>
+    </div>
+
+    <div class="services-grid">
+
+      <!-- 로고 디자인 -->
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 26 26" fill="none" stroke="#4A7C59" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="13" cy="13" r="10"/>
+            <path d="M9 13 l3 3 5-5"/>
+          </svg>
+        </div>
+        <div class="service-title">로고 디자인</div>
+        <p class="service-desc">가게의 이름과 개성을 담은 나만의 로고. 심볼·워드마크·컬러 가이드 포함.</p>
+        <div class="service-price">기본형부터 시작 가능</div>
+      </div>
+
+      <!-- 간판·메뉴판 -->
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 26 26" fill="none" stroke="#4A7C59" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="20" height="14" rx="2"/>
+            <path d="M9 19 v3 M17 19 v3 M7 22 h12"/>
+          </svg>
+        </div>
+        <div class="service-title">간판 · 메뉴판</div>
+        <p class="service-desc">실제 출력까지 고려한 가게 간판과 메뉴판 레이아웃 디자인. 인쇄용 파일 제공.</p>
+        <div class="service-price">업종별 맞춤 견적</div>
+      </div>
+
+      <!-- 인스타그램 템플릿 -->
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 26 26" fill="none" stroke="#4A7C59" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="4" width="18" height="18" rx="5"/>
+            <circle cx="13" cy="13" r="4"/>
+            <circle cx="18.5" cy="7.5" r="1" fill="#4A7C59" stroke="none"/>
+          </svg>
+        </div>
+        <div class="service-title">인스타그램 피드 템플릿</div>
+        <p class="service-desc">통일감 있는 SNS 피드를 위한 재사용 가능한 Canva·Figma 템플릿 세트.</p>
+        <div class="service-price">3·6·9종 패키지</div>
+      </div>
+
+      <!-- 명함·스티커 -->
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg viewBox="0 0 26 26" fill="none" stroke="#4A7C59" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="22" height="14" rx="2"/>
+            <path d="M6 12 h6 M6 16 h4"/>
+          </svg>
+        </div>
+        <div class="service-title">명함 · 스티커</div>
+        <p class="service-desc">첫인상을 결정짓는 명함과 브랜드 스티커. 양면 디자인 및 인쇄 연계 가능.</p>
+        <div class="service-price">소량 인쇄 연계 가능</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 작업 사례 ═════════════════════════════ -->
+<section class="section" id="cases">
+  <div class="container">
+    <div class="reveal">
+      <span class="tag">Portfolio</span>
+      <h2 class="section-title">이런 작업들을 해왔어요</h2>
+      <p class="section-sub">실제 가게에 쓰이고 있는 결과물들입니다.</p>
+    </div>
+
+    <div class="cases-grid">
+
+      <!-- 빵집 -->
+      <div class="case-card reveal">
+        <div class="case-visual case-visual-bakery">
+          <svg viewBox="0 0 300 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+            <!-- 배경 -->
+            <rect width="300" height="200" fill="transparent"/>
+            <!-- 빵 실루엣 -->
+            <ellipse cx="150" cy="130" rx="70" ry="38" fill="#D4B896" opacity=".5"/>
+            <path d="M100 130 Q150 90 200 130" fill="#C8A468" opacity=".9"/>
+            <path d="M105 132 Q150 95 195 132 Q180 155 150 158 Q120 155 105 132Z" fill="#E8C882"/>
+            <!-- 밀 장식 -->
+            <path d="M150 70 L150 95" stroke="#A07840" stroke-width="1.5" stroke-linecap="round"/>
+            <ellipse cx="150" cy="65" rx="5" ry="8" fill="#A07840" opacity=".7"/>
+            <ellipse cx="144" cy="72" rx="4" ry="7" fill="#A07840" opacity=".6" transform="rotate(-25 144 72)"/>
+            <ellipse cx="156" cy="72" rx="4" ry="7" fill="#A07840" opacity=".6" transform="rotate(25 156 72)"/>
+            <!-- 가게 이름 -->
+            <text x="150" y="175" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="600" fill="#5C3D1A" opacity=".85">달 베이커리</text>
+            <text x="150" y="188" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" letter-spacing="3" fill="#9B7040" opacity=".7">MOON BAKERY</text>
+            <!-- 장식 점 -->
+            <circle cx="60" cy="40" r="4" fill="#D4B896" opacity=".4"/>
+            <circle cx="240" cy="160" r="6" fill="#C8A468" opacity=".3"/>
+            <circle cx="270" cy="40" r="3" fill="#D4B896" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="case-body">
+          <div class="case-cat">로고 리뉴얼</div>
+          <div class="case-title">동네 빵집 로고 리뉴얼</div>
+          <p class="case-desc">20년 된 빵집의 손글씨 상호를 현대적인 밀 심볼 로고로 재탄생. 기존 고객 친숙도 유지.</p>
+        </div>
+      </div>
+
+      <!-- 공방 -->
+      <div class="case-card reveal">
+        <div class="case-visual case-visual-craft">
+          <svg viewBox="0 0 300 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+            <!-- 박스 모양 패키지 -->
+            <rect x="90" y="60" width="120" height="100" rx="4" fill="#C8DDD0" opacity=".6"/>
+            <rect x="90" y="60" width="120" height="40" rx="4" fill="#A8C8B5" opacity=".8"/>
+            <!-- 리본 -->
+            <line x1="150" y1="60" x2="150" y2="160" stroke="#4A7C59" stroke-width="1.5" stroke-dasharray="4 2" opacity=".6"/>
+            <line x1="90" y1="80" x2="210" y2="80" stroke="#4A7C59" stroke-width="1.5" stroke-dasharray="4 2" opacity=".6"/>
+            <!-- 리본 매듭 -->
+            <circle cx="150" cy="80" r="8" fill="white" opacity=".9"/>
+            <path d="M146 76 Q150 72 154 76 Q158 80 154 84 Q150 88 146 84 Q142 80 146 76Z" fill="#4A7C59" opacity=".3"/>
+            <!-- 텍스트 -->
+            <text x="150" y="116" text-anchor="middle" font-family="Georgia,serif" font-size="12" font-weight="600" fill="#2A4A35">실의 공방</text>
+            <text x="150" y="130" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.5" letter-spacing="2.5" fill="#4A7C59" opacity=".8">SILT ATELIER</text>
+            <!-- 장식 -->
+            <circle cx="60" cy="50" r="5" fill="#A8C8B5" opacity=".4"/>
+            <circle cx="250" cy="150" r="8" fill="#C8DDD0" opacity=".4"/>
+            <circle cx="240" cy="45" r="3" fill="#4A7C59" opacity=".2"/>
+            <!-- 작은 사각 카드들 -->
+            <rect x="60" y="100" width="18" height="24" rx="2" fill="white" opacity=".8"/>
+            <rect x="222" y="90" width="18" height="24" rx="2" fill="white" opacity=".8"/>
+          </svg>
+        </div>
+        <div class="case-body">
+          <div class="case-cat">브랜드 패키지</div>
+          <div class="case-title">수공예 공방 브랜드 패키지</div>
+          <p class="case-desc">로고·명함·스티커·포장지까지 통일된 브랜드 아이덴티티로 구성한 풀 패키지.</p>
+        </div>
+      </div>
+
+      <!-- 카페 -->
+      <div class="case-card reveal">
+        <div class="case-visual case-visual-cafe">
+          <svg viewBox="0 0 300 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+            <!-- 메뉴판 -->
+            <rect x="100" y="30" width="100" height="140" rx="6" fill="white" opacity=".9"/>
+            <rect x="100" y="30" width="100" height="28" rx="6" fill="#B8CDD8" opacity=".6"/>
+            <!-- 커피잔 아이콘 -->
+            <ellipse cx="150" cy="53" rx="10" ry="4" fill="#6A9AB0" opacity=".5"/>
+            <!-- 메뉴 라인들 -->
+            <line x1="116" y1="78" x2="184" y2="78" stroke="#C8D8E0" stroke-width="1.2"/>
+            <line x1="116" y1="94" x2="184" y2="94" stroke="#C8D8E0" stroke-width="1.2"/>
+            <line x1="116" y1="110" x2="184" y2="110" stroke="#C8D8E0" stroke-width="1.2"/>
+            <line x1="116" y1="126" x2="184" y2="126" stroke="#C8D8E0" stroke-width="1.2"/>
+            <line x1="116" y1="142" x2="184" y2="142" stroke="#C8D8E0" stroke-width="1.2"/>
+            <!-- 텍스트 시뮬레이션 -->
+            <rect x="116" y="82" width="36" height="6" rx="2" fill="#8AAAB8" opacity=".5"/>
+            <rect x="162" y="82" width="22" height="6" rx="2" fill="#8AAAB8" opacity=".5"/>
+            <rect x="116" y="98" width="44" height="6" rx="2" fill="#8AAAB8" opacity=".4"/>
+            <rect x="162" y="98" width="20" height="6" rx="2" fill="#8AAAB8" opacity=".4"/>
+            <rect x="116" y="114" width="30" height="6" rx="2" fill="#8AAAB8" opacity=".4"/>
+            <rect x="116" y="130" width="50" height="6" rx="2" fill="#8AAAB8" opacity=".3"/>
+            <rect x="116" y="146" width="38" height="6" rx="2" fill="#8AAAB8" opacity=".3"/>
+            <!-- 가게명 -->
+            <text x="150" y="48" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="600" fill="#2A4050">OLLE CAFÉ</text>
+            <!-- 장식 -->
+            <circle cx="55" cy="60" r="12" fill="#B8CDD8" opacity=".3"/>
+            <circle cx="255" cy="150" r="10" fill="#8AAAB8" opacity=".25"/>
+          </svg>
+        </div>
+        <div class="case-body">
+          <div class="case-cat">메뉴판 디자인</div>
+          <div class="case-title">카페 메뉴판 디자인</div>
+          <p class="case-desc">계절마다 바뀌는 메뉴를 손쉽게 수정할 수 있도록 레이어 분리 파일과 함께 납품.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 강점 배너 ═════════════════════════════ -->
+<section class="strength" id="about">
+  <div class="container strength-inner">
+    <div class="reveal">
+      <h2 class="strength-title">
+        왜 스튜디오 여백인가요?<br />
+        <em>작은 가게의 사정을 누구보다 잘 압니다.</em>
+      </h2>
+    </div>
+    <ul class="strength-list reveal">
+      <li>
+        <span class="check">✓</span>
+        <span><strong>군더더기 없는 여백의 감각</strong> — 복잡하지 않아도 기억되는 디자인. 오래 봐도 질리지 않는 절제된 아름다움.</span>
+      </li>
+      <li>
+        <span class="check">✓</span>
+        <span><strong>소상공인 예산에 맞는 현실적 비용</strong> — 대형 에이전시 가격의 부담 없이, 프로다운 결과물을.</span>
+      </li>
+      <li>
+        <span class="check">✓</span>
+        <span><strong>1:1 직접 소통</strong> — 담당자가 바뀌지 않습니다. 처음부터 끝까지 디자이너 이도현이 직접 진행합니다.</span>
+      </li>
+      <li>
+        <span class="check">✓</span>
+        <span><strong>실용적인 파일 납품</strong> — 인쇄소, SNS, 현수막까지 바로 쓸 수 있는 형식으로 드립니다.</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CTA 섹션 ══════════════════════════════ -->
+<section class="cta section--alt" id="contact">
+  <div class="container">
+    <div class="reveal">
+      <span class="tag">Contact</span>
+      <h2 class="cta-title">
+        지금 가게에 어울리는<br />얼굴을 찾고 계신가요?
+      </h2>
+      <p class="cta-sub">
+        상담은 무료입니다. 부담 없이 먼저 연락 주세요.
+      </p>
+      <div class="cta-actions">
+        <a href="mailto:yeobaek.studio@example.com" class="btn btn-primary">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          이메일로 문의하기
+        </a>
+        <a href="https://instagram.com/yeobaek.studio" target="_blank" rel="noopener" class="btn btn-outline">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+          인스타그램 DM
+        </a>
+      </div>
+      <div class="cta-contact">
+        <a href="mailto:yeobaek.studio@example.com" class="contact-item">
+          <div class="contact-icon">
+            <svg width="16" height="16" fill="none" stroke="#4A7C59" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          yeobaek.studio@example.com
+        </a>
+        <a href="https://instagram.com/yeobaek.studio" target="_blank" rel="noopener" class="contact-item">
+          <div class="contact-icon">
+            <svg width="16" height="16" fill="none" stroke="#4A7C59" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="#4A7C59" stroke="none"/></svg>
+          </div>
+          @yeobaek.studio
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ 푸터 ══════════════════════════════════ -->
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-logo">스튜디오 <span>여백</span></div>
+    <ul class="footer-links">
+      <li><a href="#services">서비스</a></li>
+      <li><a href="#cases">작업 사례</a></li>
+      <li><a href="mailto:yeobaek.studio@example.com">이메일</a></li>
+    </ul>
+    <p class="footer-copy">© 2024 스튜디오 여백 · 디자이너 이도현</p>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════ 스크립트 ══════════════════════════════ -->
+<script>
+  /* 스크롤 페이드인 */
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  /* 모바일 메뉴 토글 */
+  function toggleMenu(btn) {
+    const links = document.querySelector('.nav-links');
+    const open = links.style.display === 'flex';
+    links.style.cssText = open
+      ? ''
+      : 'display:flex;flex-direction:column;position:absolute;top:70px;left:0;right:0;background:rgba(250,250,248,.97);padding:20px 24px;gap:18px;border-bottom:1px solid #E8EDE9;backdrop-filter:blur(14px);';
+    btn.querySelectorAll('span')[0].style.transform = open ? '' : 'rotate(45deg) translate(5px,5px)';
+    btn.querySelectorAll('span')[1].style.opacity   = open ? '' : '0';
+    btn.querySelectorAll('span')[2].style.transform = open ? '' : 'rotate(-45deg) translate(5px,-5px)';
+  }
+
+  /* 내비게이션 스크롤 효과 */
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').style.boxShadow =
+      window.scrollY > 30 ? '0 4px 24px rgba(0,0,0,.07)' : 'none';
+  });
+</script>
+
+</body>
+</html>
