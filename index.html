@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     /* ─── 리셋 & 기본 ─────────────────────────────────────── */
@@ -468,6 +469,113 @@
 
     /* ─── SVG 일러스트 스타일 ─────────────────────────────── */
     .illust-bakery, .illust-craft, .illust-cafe { width: 100%; height: 100%; }
+
+    /* ─── 문의 모달 ───────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(15,20,15,.55);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1; pointer-events: auto;
+    }
+    .modal-card {
+      background: var(--c-white);
+      border-radius: var(--radius-lg);
+      padding: 48px 44px 40px;
+      width: 100%; max-width: 500px;
+      position: relative;
+      transform: translateY(28px) scale(.97);
+      transition: transform .38s cubic-bezier(.4,0,.2,1);
+      max-height: 92vh; overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(0,0,0,.22);
+    }
+    .modal-overlay.active .modal-card {
+      transform: translateY(0) scale(1);
+    }
+    .modal-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 36px; height: 36px;
+      background: var(--c-green-xs); border: none;
+      border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-green); font-size: 1.1rem;
+      transition: var(--transition);
+    }
+    .modal-close:hover { background: var(--c-green); color: #fff; }
+    .modal-header { margin-bottom: 28px; }
+    .modal-eyebrow {
+      font-size: .72rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--c-green); margin-bottom: 8px;
+    }
+    .modal-title {
+      font-family: var(--font-serif);
+      font-size: 1.45rem; font-weight: 600;
+      color: var(--c-ink); line-height: 1.3; word-break: keep-all;
+    }
+    .modal-subtitle {
+      font-size: .88rem; color: var(--c-gray); margin-top: 6px; word-break: keep-all;
+    }
+    .form-group { margin-bottom: 18px; }
+    .form-label {
+      display: block; font-size: .82rem; font-weight: 600;
+      color: var(--c-ink); margin-bottom: 7px;
+    }
+    .form-label span { color: var(--c-green); }
+    .form-input, .form-textarea {
+      width: 100%; font-family: var(--font-sans); font-size: .93rem;
+      color: var(--c-ink); background: var(--c-bg);
+      border: 1.5px solid var(--c-line); border-radius: var(--radius-md);
+      padding: 12px 16px; outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--c-green);
+      box-shadow: 0 0 0 3px rgba(74,124,89,.12);
+    }
+    .form-textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+    .form-submit {
+      width: 100%; padding: 15px;
+      font-family: var(--font-sans); font-size: 1rem; font-weight: 600;
+      color: #fff; background: var(--c-green);
+      border: none; border-radius: 99px; cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 20px rgba(74,124,89,.3);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 8px;
+    }
+    .form-submit:hover:not(:disabled) { background: #3a6347; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(74,124,89,.4); }
+    .form-submit:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+    /* 성공 화면 */
+    .modal-success {
+      display: none; text-align: center; padding: 20px 0;
+    }
+    .modal-success.show { display: block; }
+    .success-icon {
+      width: 72px; height: 72px;
+      background: var(--c-green-xs); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      animation: pop .4s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes pop {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .success-title {
+      font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600;
+      color: var(--c-ink); margin-bottom: 10px;
+    }
+    .success-desc { font-size: .9rem; color: var(--c-gray); word-break: keep-all; }
+    .modal-form-wrap { transition: opacity .3s; }
+    .modal-form-wrap.hidden { opacity: 0; pointer-events: none; }
+    @media (max-width: 540px) {
+      .modal-card { padding: 36px 24px 28px; }
+    }
   </style>
 </head>
 
@@ -484,7 +592,7 @@
       <li><a href="#contact">문의</a></li>
     </ul>
     <div class="nav-cta">
-      <a href="mailto:yeobaek.studio@example.com" class="btn btn-primary">지금 문의하기</a>
+      <button class="btn btn-primary" onclick="openModal()" id="nav-inquiry-btn">지금 문의하기</button>
     </div>
     <button class="hamburger" aria-label="메뉴" onclick="toggleMenu(this)">
       <span></span><span></span><span></span>
@@ -513,10 +621,10 @@
         군더더기 없는 여백의 감각으로, 당신의 가게를 기억되게 합니다.
       </p>
       <div class="hero-actions">
-        <a href="mailto:yeobaek.studio@example.com" class="btn btn-primary">
+        <button class="btn btn-primary" onclick="openModal()" id="hero-inquiry-btn">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           무료 상담 신청
-        </a>
+        </button>
         <a href="#cases" class="btn btn-outline">작업 사례 보기</a>
       </div>
 
@@ -797,10 +905,10 @@
         상담은 무료입니다. 부담 없이 먼저 연락 주세요.
       </p>
       <div class="cta-actions">
-        <a href="mailto:yeobaek.studio@example.com" class="btn btn-primary">
+        <button class="btn btn-primary" onclick="openModal()" id="cta-inquiry-btn">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          이메일로 문의하기
-        </a>
+          무료 상담 신청
+        </button>
         <a href="https://instagram.com/yeobaek.studio" target="_blank" rel="noopener" class="btn btn-outline">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
           인스타그램 DM
@@ -837,9 +945,115 @@
   </div>
 </footer>
 
+<!-- ═══════════════════════════════ 문의 모달 ══════════════════════════════ -->
+<div class="modal-overlay" id="inquiryModal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()" aria-label="닫기">✕</button>
+
+    <!-- 폼 영역 -->
+    <div class="modal-form-wrap" id="modalFormWrap">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Free Consultation</div>
+        <h2 class="modal-title" id="modal-title">무료 상담 신청</h2>
+        <p class="modal-subtitle">부담 없이 작성해 주세요. 빠르게 확인하고 연락드립니다.</p>
+      </div>
+      <form id="inquiryForm" onsubmit="submitInquiry(event)">
+        <div class="form-group">
+          <label class="form-label" for="inp-name">이름 <span>*</span></label>
+          <input class="form-input" id="inp-name" type="text" placeholder="홍길동" required maxlength="50" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inp-email">이메일 <span>*</span></label>
+          <input class="form-input" id="inp-email" type="email" placeholder="example@email.com" required maxlength="100" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="inp-message">문의 내용 <span>*</span></label>
+          <textarea class="form-textarea" id="inp-message" placeholder="어떤 디자인이 필요하신가요? 가게 종류, 원하시는 느낌 등 편하게 적어주세요 :)" required maxlength="2000"></textarea>
+        </div>
+        <button class="form-submit" type="submit" id="submitBtn">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          상담 신청하기
+        </button>
+      </form>
+    </div>
+
+    <!-- 성공 화면 -->
+    <div class="modal-success" id="modalSuccess">
+      <div class="success-icon">
+        <svg width="32" height="32" fill="none" stroke="#4A7C59" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="success-title">상담 신청이 완료되었어요!</div>
+      <p class="success-desc">소중한 문의 감사합니다.<br/>빠른 시일 내에 이메일로 연락드리겠습니다. 🌿</p>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════ 스크립트 ══════════════════════════════ -->
 <script>
-  /* 스크롤 페이드인 */
+  /* ── Supabase 초기화 ── */
+  const { createClient } = supabase;
+  const sb = createClient(
+    'https://oxailmtpgsjubnfeehrs.supabase.co',
+    'sb_publishable_ilQO4mf57TBCaaIlL9Lmmg_1mLvSTi5'
+  );
+
+  /* ── 모달 열기/닫기 ── */
+  function openModal() {
+    const overlay = document.getElementById('inquiryModal');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('inp-name').focus(), 300);
+  }
+  function closeModal() {
+    document.getElementById('inquiryModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  // 오버레이 클릭으로 닫기
+  document.getElementById('inquiryModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+  // ESC 키로 닫기
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  /* ── 폼 제출 ── */
+  async function submitInquiry(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const name    = document.getElementById('inp-name').value.trim();
+    const email   = document.getElementById('inp-email').value.trim();
+    const message = document.getElementById('inp-message').value.trim();
+
+    btn.disabled = true;
+    btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> 전송 중...';
+
+    try {
+      const { error } = await sb.from('inquiries').insert({ name, email, message });
+      if (error) throw error;
+      // 성공
+      document.getElementById('modalFormWrap').classList.add('hidden');
+      setTimeout(() => {
+        document.getElementById('modalSuccess').classList.add('show');
+      }, 200);
+      // 3초 후 모달 닫기
+      setTimeout(() => {
+        closeModal();
+        setTimeout(() => {
+          document.getElementById('modalFormWrap').classList.remove('hidden');
+          document.getElementById('modalSuccess').classList.remove('show');
+          document.getElementById('inquiryForm').reset();
+          btn.disabled = false;
+          btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> 상담 신청하기';
+        }, 400);
+      }, 2800);
+    } catch (err) {
+      console.error(err);
+      alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.\n' + (err.message || ''));
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> 상담 신청하기';
+    }
+  }
+
+  /* ── 스크롤 페이드인 ── */
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
@@ -851,7 +1065,7 @@
   }, { threshold: 0.12 });
   reveals.forEach(el => observer.observe(el));
 
-  /* 모바일 메뉴 토글 */
+  /* ── 모바일 메뉴 토글 ── */
   function toggleMenu(btn) {
     const links = document.querySelector('.nav-links');
     const open = links.style.display === 'flex';
@@ -863,11 +1077,16 @@
     btn.querySelectorAll('span')[2].style.transform = open ? '' : 'rotate(-45deg) translate(5px,-5px)';
   }
 
-  /* 내비게이션 스크롤 효과 */
+  /* ── 내비게이션 스크롤 효과 ── */
   window.addEventListener('scroll', () => {
     document.getElementById('navbar').style.boxShadow =
       window.scrollY > 30 ? '0 4px 24px rgba(0,0,0,.07)' : 'none';
   });
+
+  /* ── 스피너 키프레임 (인라인 style에 없어서 추가) ── */
+  const spinStyle = document.createElement('style');
+  spinStyle.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+  document.head.appendChild(spinStyle);
 </script>
 
 </body>
